@@ -6,7 +6,7 @@
           {{ accessTokenLabel }}
         </MetaChip>
         <MetaChip :tone="item.refresh_token_tone" size="xs" strong>
-          {{ item.refresh_token_label }}
+          {{ refreshTokenLabel }}
         </MetaChip>
       </span>
 
@@ -98,8 +98,8 @@ const emit = defineEmits<{
 }>()
 
 const refreshTokenMissing = computed(() => props.item.refresh_token_status === 'missing')
-const accessTokenLabel = computed(() => ({ valid: 'Valid', expiring: 'Expiring', invalid: 'Invalid' }[props.item.access_token_status] || props.item.access_token_label))
-const refreshTokenLabel = computed(() => ({ valid: 'Valid', missing: 'Missing', invalid: 'Invalid' }[props.item.refresh_token_status] || props.item.refresh_token_label))
+const accessTokenLabel = computed(() => ({ valid: 'AT valid', expiring: 'AT expiring', invalid: 'AT invalid' }[props.item.access_token_status] || props.item.access_token_label))
+const refreshTokenLabel = computed(() => ({ valid: 'RT valid', missing: 'RT missing', invalid: 'RT invalid' }[props.item.refresh_token_status] || props.item.refresh_token_label))
 const hasAccessIssuedAt = computed(() => Number(props.item.access_token_issued_at || 0) > 0)
 const hasAccessExpiresAt = computed(() => Number(props.item.access_token_expires_at || 0) > 0)
 const hasLastTokenRefreshAt = computed(() => Number(props.item.last_token_refresh_at || 0) > 0)
