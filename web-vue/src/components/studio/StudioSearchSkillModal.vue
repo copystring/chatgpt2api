@@ -79,7 +79,7 @@ const emit = defineEmits<{
   copy: [value: string]
 }>()
 
-const language = ref<SearchSkillLanguage>('zh')
+const language = ref<SearchSkillLanguage>('en')
 const isCopying = ref(false)
 const languageOptions = [
   { label: 'Chinese', value: 'zh' },
