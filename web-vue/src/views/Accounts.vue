@@ -566,10 +566,10 @@
 
     <ModalShell
       :open="showImportModal"
-      aria-label="导入账号"
+      aria-label="Import accounts"
       :z-index="120"
     >
-            <ModalHeader title="导入账号" :close-disabled="importModalBusy" compact @close="closeImportModal" />
+            <ModalHeader title="Import accounts" :close-disabled="importModalBusy" compact @close="closeImportModal" />
 
             <div class="grid grid-cols-1 gap-0 md:grid-cols-[15rem_1fr]">
               <div class="flex flex-col border-b border-border bg-muted/20 p-3 md:border-b-0 md:border-r">
@@ -598,12 +598,12 @@
               <div class="min-h-[clamp(26rem,55vh,42rem)] p-4">
                 <div v-if="importMode === 'oauth_login'" class="space-y-3">
                   <ImportModePanel
-                    title="OAuth 登录已有账号"
-                    description="用浏览器登录 ChatGPT，回填 callback URL 后保存 RT，用于 AT 临期自动续期。"
+                    title="Sign in to an existing account with OAuth"
+                    description="Sign in to ChatGPT in your browser, then paste the callback URL to save the RT. It can renew an AT before it expires."
                   />
                   <div class="grid grid-cols-1 gap-3">
                     <label class="block text-xs">
-                      <span class="ui-field-label">账号邮箱（可选）</span>
+                      <span class="ui-field-label">Account email (optional)</span>
                       <Input
                         :model-value="oauthEmailHint"
                         type="email"
@@ -616,19 +616,19 @@
 
                     <div class="flex flex-wrap gap-2">
                       <Button size="xs" variant="primary" :disabled="importBusy" @click="startOAuthLogin">
-                        {{ oauthAuthorizeUrl ? '重新生成授权链接' : '生成并打开授权页面' }}
+                        {{ oauthAuthorizeUrl ? 'Regenerate authorization link' : 'Generate and open authorization page' }}
                       </Button>
                       <Button v-if="oauthAuthorizeUrl" size="xs" variant="outline" :disabled="importBusy" @click="openOAuthAuthorizeUrl">
-                        打开授权页面
+                        Open authorization page
                       </Button>
                       <Button v-if="oauthAuthorizeUrl" size="xs" variant="outline" :disabled="importBusy" @click="copyOAuthAuthorizeUrl">
-                        复制授权链接
+                        Copy authorization link
                       </Button>
                     </div>
 
                     <SurfaceBox v-if="oauthAuthorizeUrl" tone="muted" density="compact" wrap>
-                      授权链接已生成。登录完成后，把浏览器最终跳转到的 callback URL 粘贴到下方。
-                      <span v-if="oauthRedirectUriPrefix">目标地址：{{ oauthRedirectUriPrefix }}</span>
+                      Authorization link generated. After signing in, paste the final callback URL from your browser below.
+                      <span v-if="oauthRedirectUriPrefix">Redirect URI: {{ oauthRedirectUriPrefix }}</span>
                     </SurfaceBox>
 
                     <label class="block text-xs">
@@ -637,7 +637,7 @@
                         v-model.trim="oauthCallbackText"
                         rows="5"
                         class="ui-textarea-sm font-mono"
-                        placeholder="粘贴完整 callback URL，或只粘贴 code"
+                        placeholder="Paste the full callback URL or just the code"
                         :disabled="importBusy || !oauthSessionId"
                       ></textarea>
                     </label>
@@ -649,7 +649,7 @@
                         :disabled="importBusy || !oauthSessionId || !oauthCallbackText.trim()"
                         @click="finishOAuthLogin"
                       >
-                        {{ importBusy ? '导入中...' : '完成导入' }}
+                        {{ importBusy ? 'Importing…' : 'Finish import' }}
                       </Button>
                     </div>
                   </div>
@@ -657,69 +657,69 @@
 
                 <div v-else-if="importMode === 'access_token'" class="space-y-3">
                   <ImportModePanel
-                    title="导入 Access Token"
-                    description="支持直接粘贴，一行一个；也支持从 TXT 文件读取，一行一个。"
+                    title="Import access tokens"
+                    description="Paste tokens directly, one per line, or load a TXT file with one token per line."
                   />
                   <textarea
                     v-model.trim="manualTokenText"
                     rows="10"
                     class="ui-textarea-sm font-mono"
-                    placeholder="一行一个 access token"
+                    placeholder="One access token per line"
                   ></textarea>
                   <div class="flex flex-wrap justify-end gap-2">
                     <Button size="xs" variant="outline" :disabled="importBusy" @click="openManualTokenFile">
-                      读取 TXT 文件
+                      Load TXT file
                     </Button>
                     <Button size="xs" variant="primary" :disabled="importBusy || !manualTokenText.trim()" @click="importManualTokenText">
-                      {{ importBusy ? '导入中...' : '开始导入' }}
+                      {{ importBusy ? 'Importing…' : 'Start import' }}
                     </Button>
                   </div>
                 </div>
 
                 <div v-else-if="importMode === 'session_json'" class="space-y-3">
-                  <ImportModePanel title="导入 Session JSON">
+                  <ImportModePanel title="Import session JSON">
                     <template #description>
                       <p class="mt-1 text-xs leading-6 text-muted-foreground">
-                        打开
+                        Open
                         <a
                           href="https://chatgpt.com/api/auth/session"
                           target="_blank"
                           rel="noopener noreferrer"
                           class="font-medium text-primary underline decoration-primary/35 underline-offset-2 hover:decoration-primary"
-                        >https://chatgpt.com/api/auth/session</a>，复制完整 JSON，系统会保留其中的 AT、RT 和 ID Token；该接口通常不包含长期 RT。
+                        >https://chatgpt.com/api/auth/session</a>, copy the full JSON, and paste it here. The importer keeps the AT, RT, and ID token; this endpoint usually does not include a long-lived RT.
                       </p>
                     </template>
                   </ImportModePanel>
-                  <textarea v-model.trim="sessionJsonText" rows="12" class="ui-textarea-sm font-mono" placeholder="粘贴完整 session JSON"></textarea>
+                  <textarea v-model.trim="sessionJsonText" rows="12" class="ui-textarea-sm font-mono" placeholder="Paste the full session JSON"></textarea>
                   <div class="flex justify-end">
                     <Button size="xs" variant="primary" :disabled="importBusy || !sessionJsonText.trim()" @click="importSessionJson">
-                      {{ importBusy ? '导入中...' : '开始导入' }}
+                      {{ importBusy ? 'Importing…' : 'Start import' }}
                     </Button>
                   </div>
                 </div>
 
                 <div v-else-if="importMode === 'backup_json'" class="space-y-3">
                   <ImportModePanel
-                    title="导入完整备份文件"
-                    description="读取本系统导出的完整账号 JSON，直接恢复已保存的凭据和账号配置，不请求远程接口验证。"
+                    title="Import full backup file"
+                    description="Load a full account JSON export from this system to restore saved credentials and account settings. No remote verification is performed."
                   />
                   <StateBlock dashed compact>
                     <Button size="sm" variant="outline" :disabled="importBusy" @click="openAccountFileDialog">
-                      选择备份 JSON 文件
+                      Select backup JSON file
                     </Button>
                   </StateBlock>
                 </div>
 
                 <div v-else-if="importMode === 'cpa_json' || importMode === 'sub2api_json'" class="space-y-3">
                   <ImportModePanel
-                    :title="importMode === 'sub2api_json' ? '导入 Sub2API JSON 文件' : '导入 CPA JSON 文件'"
+                    :title="importMode === 'sub2api_json' ? 'Import Sub2API JSON file' : 'Import CPA JSON file'"
                     :description="importMode === 'sub2api_json'
-                      ? '读取 Sub2API 导出的 JSON 文件，提取账号凭据并同步账号信息与额度。'
-                      : '从一个或多个 CPA JSON 文件提取账号凭据，并请求远程接口验证、同步账号信息与额度。'"
+                      ? 'Load JSON files exported by Sub2API to extract account credentials and sync account details and quotas.'
+                      : 'Extract account credentials from one or more CPA JSON files, then verify them remotely and sync account details and quotas.'"
                   />
                   <StateBlock dashed compact>
                     <Button size="sm" variant="outline" :disabled="importBusy" @click="openAccountFileDialog">
-                      选择 {{ importMode === 'sub2api_json' ? 'Sub2API' : 'CPA' }} JSON 文件
+                      Select {{ importMode === 'sub2api_json' ? 'Sub2API' : 'CPA' }} JSON file(s)
                     </Button>
                   </StateBlock>
                 </div>

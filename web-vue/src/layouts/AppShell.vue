@@ -58,7 +58,7 @@
 
         <nav id="app-sidebar-navigation" class="sidebar-nav-scroll min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-2 pb-2 pt-3 lg:pt-4">
           <p class="shell-sidebar-section-label sidebar-section-label px-3 text-xs uppercase tracking-[0.28em] text-muted-foreground">
-            导航
+            Navigation
           </p>
           <div class="space-y-1">
             <RouterLink
@@ -105,10 +105,10 @@
               variant="outline"
               :icon-only="isSidebarRail"
               root-class="sidebar-logout shell-sidebar-footer-button rounded-full text-muted-foreground"
-              aria-label="退出登录"
+              aria-label="Sign out"
               @click="handleLogout"
             >
-              <Tooltip v-if="isSidebarRail" text="退出登录" placement="right">
+              <Tooltip v-if="isSidebarRail" text="Sign out" placement="right">
                 <span class="sidebar-footer-tooltip-trigger">
                   <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M10 17l5-5-5-5" />
@@ -117,7 +117,7 @@
                   </svg>
                 </span>
               </Tooltip>
-              <span class="sidebar-label sidebar-logout-label">退出登录</span>
+              <span class="sidebar-label sidebar-logout-label">Sign out</span>
             </Button>
             <Button
               v-if="!isImmersivePage"
@@ -126,11 +126,11 @@
               icon-only
               root-class="sidebar-collapse-button shell-sidebar-footer-button shrink-0 rounded-full text-muted-foreground"
               @click="isSidebarCollapsed = !isSidebarCollapsed"
-              :aria-label="isSidebarCollapsed ? '展开侧边栏' : '收起侧边栏'"
+              :aria-label="isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
               :aria-expanded="!isSidebarCollapsed"
               aria-controls="app-sidebar-navigation"
             >
-              <Tooltip v-if="isSidebarRail" :text="isSidebarCollapsed ? '展开侧边栏' : '收起侧边栏'" placement="right">
+              <Tooltip v-if="isSidebarRail" :text="isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'" placement="right">
                 <span class="sidebar-footer-tooltip-trigger">
                   <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 shrink-0" fill="currentColor">
                     <path d="M6 4h2v16H6V4zm4 4h8v2h-8V8zm0 6h8v2h-8v-2z" />
@@ -167,7 +167,7 @@
               icon-only
               root-class="lg:hidden"
               @click="openSidebar"
-              aria-label="打开导航"
+              aria-label="Open navigation"
               :aria-expanded="isMobileViewport && isSidebarOpen"
               aria-controls="app-sidebar-navigation"
             >
@@ -222,50 +222,50 @@
                 </Button>
               </Tooltip>
               <span v-if="canvasHref" class="hidden lg:inline-flex">
-                <Tooltip text="打开无限画布" placement="bottom">
+                <Tooltip text="Open infinite canvas" placement="bottom">
                   <Button
                     size="sm"
                     variant="outline"
-                    aria-label="打开无限画布"
+                    aria-label="Open infinite canvas"
                     @click="openInfiniteCanvas"
                   >
-                    画布
+                    Canvas
                   </Button>
                 </Tooltip>
               </span>
-              <Tooltip text="刷新当前页面" placement="bottom">
+              <Tooltip text="Refresh this page" placement="bottom">
                 <Button
                   size="sm"
                   variant="outline"
-                  aria-label="刷新当前页面"
+                  aria-label="Refresh this page"
                   @click="refreshPage"
                 >
-                  刷新
+                  Refresh
                 </Button>
               </Tooltip>
             </div>
             <div class="flex items-center gap-[8px]">
               <span v-if="authStore.isAdmin" class="hidden lg:inline-flex">
-                <Tooltip text="查看接口信息" placement="bottom">
+                <Tooltip text="View API information" placement="bottom">
                   <Button
                     size="sm"
                     variant="outline"
-                    aria-label="查看接口信息"
+                    aria-label="View API information"
                     @click="openApiInfo"
                   >
-                    接口
+                    API
                   </Button>
                 </Tooltip>
               </span>
               <span class="hidden lg:inline-flex">
-                <Tooltip text="交流与服务" placement="bottom">
+                <Tooltip text="Community and services" placement="bottom">
                   <Button
                     size="sm"
                     variant="outline"
-                    aria-label="交流与服务"
+                    aria-label="Community and services"
                     @click="isServiceDialogOpen = true"
                   >
-                    服务
+                    Services
                   </Button>
                 </Tooltip>
               </span>
@@ -757,9 +757,9 @@ const routeProgressPhase = ref<RouteProgressPhase>('idle')
 const cachedRouteNames = ['Dashboard', 'Studio', 'Accounts', 'Logs', 'Monitor', 'Gallery', 'Proxy', 'Settings']
 const cachedRouteMax = cachedRouteNames.length
 const themeOptions: { label: string; value: ThemeMode }[] = [
-  { label: '浅色', value: 'light' },
-  { label: '深色', value: 'dark' },
-  { label: '系统', value: 'system' },
+  { label: 'Light', value: 'light' },
+  { label: 'Dark', value: 'dark' },
+  { label: 'System', value: 'system' },
 ]
 const {
   chatModels: supportedChatModels,
@@ -782,63 +782,63 @@ type NavigationItem = {
 const menuItems: NavigationItem[] = [
   {
     path: '/',
-    label: '概览中心',
+    label: 'Dashboard',
     icon: 'M4 4h7v7H4V4zm9 0h7v4h-7V4zm0 6h7v10h-7V10zM4 13h7v7H4v-7z',
     capability: 'admin_console',
   },
   {
     path: '/monitor',
-    label: '实时监控',
+    label: 'Monitor',
     icon: 'M4 5h3v14H4V5zm5 6h3v8H9v-8zm5-4h3v12h-3V7zm5 7h3v5h-3v-5z',
     capability: 'admin_console',
   },
   {
     path: '/studio',
-    label: '对话画图',
+    label: 'Chat Studio',
     icon: 'M5 4h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-5l-4 4v-4H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm1 3v6h12V7H6zm2 2 2.1 2.8 2.4-3.1L17 14H7l1-5z',
     capability: 'studio',
   },
   {
     path: '/accounts',
-    label: '账号管理',
+    label: 'Accounts',
     icon: 'M12 12a3.5 3.5 0 1 0-3.5-3.5A3.5 3.5 0 0 0 12 12zm0 2c-4.1 0-7.5 2.2-7.5 5v1h15v-1c0-2.8-3.4-5-7.5-5z',
     capability: 'admin_console',
   },
   {
     path: '/logs',
-    label: '日志管理',
+    label: 'Logs',
     icon: 'M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h10v2H4v-2z',
     capability: 'admin_console',
   },
   {
     path: '/gallery',
-    label: '图片管理',
+    label: 'Gallery',
     icon: 'M22 16V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2zm-11-4 2.03 2.71L16 11l4 5H8l3-3zM2 6v14a2 2 0 0 0 2 2h14v-2H4V6H2z',
     capability: 'admin_console',
   },
   {
     path: '/proxy',
-    label: '代理管理',
+    label: 'Proxies',
     icon: 'M12 3a5 5 0 0 1 5 5v2h1a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-5a3 3 0 0 1 3-3h1V8a5 5 0 0 1 5-5zm-3 7h6V8a3 3 0 0 0-6 0v2zm-3 2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H6z',
     capability: 'admin_console',
   },
   {
     path: '/settings',
-    label: '系统设置',
+    label: 'Settings',
     icon: 'M4 6h10v2H4V6zm12 0h4v2h-4V6zM4 11h6v2H4v-2zm8 0h8v2h-8v-2zM4 16h10v2H4v-2zm12 0h4v2h-4v-2z',
     capability: 'admin_console',
   },
 ]
 
 const routeTitleMap: Record<string, string> = {
-  dashboard: '概览中心',
-  accounts: '账号管理',
-  logs: '日志管理',
-  gallery: '图片管理',
-  proxy: '代理管理',
-  settings: '系统设置',
-  monitor: '实时监控',
-  studio: '对话画图',
+  dashboard: 'Dashboard',
+  accounts: 'Accounts',
+  logs: 'Logs',
+  gallery: 'Gallery',
+  proxy: 'Proxies',
+  settings: 'Settings',
+  monitor: 'Monitor',
+  studio: 'Chat Studio',
 }
 
 const visibleMenuItems = computed(() => {
@@ -848,7 +848,7 @@ const visibleMenuItems = computed(() => {
 const currentPageTitle = computed(() => {
   const routeName = String(route.name || '')
   const item = visibleMenuItems.value.find(item => isNavActive(item.path))
-  return item?.label || routeTitleMap[routeName] || '概览中心'
+  return item?.label || routeTitleMap[routeName] || 'Dashboard'
 })
 
 const isImmersivePage = computed(() => Boolean(route.meta.immersive))

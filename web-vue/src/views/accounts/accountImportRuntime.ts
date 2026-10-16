@@ -18,14 +18,14 @@ export {
 } from './remoteAccountImportTrackingRuntime'
 
 export const ACCOUNT_IMPORT_MODE_CATALOG = [
-  { label: 'OAuth 登录已有账号', value: 'oauth_login' },
-  { label: '导入完整备份文件', value: 'backup_json' },
-  { label: '导入 Access Token', value: 'access_token' },
-  { label: '导入 Session JSON', value: 'session_json' },
-  { label: '导入 CPA JSON 文件', value: 'cpa_json' },
-  { label: '导入 Sub2API JSON 文件', value: 'sub2api_json' },
-  { label: '从远程 CPA 服务器导入', value: 'remote_cpa' },
-  { label: '从 Sub2API 服务器导入', value: 'sub2api' },
+  { label: 'Sign in with OAuth', value: 'oauth_login' },
+  { label: 'Import full backup', value: 'backup_json' },
+  { label: 'Import access token', value: 'access_token' },
+  { label: 'Import session JSON', value: 'session_json' },
+  { label: 'Import CPA JSON file', value: 'cpa_json' },
+  { label: 'Import Sub2API JSON file', value: 'sub2api_json' },
+  { label: 'Import from remote CPA server', value: 'remote_cpa' },
+  { label: 'Import from Sub2API server', value: 'sub2api' },
 ] as const
 
 export type AccountImportMode = typeof ACCOUNT_IMPORT_MODE_CATALOG[number]['value']
