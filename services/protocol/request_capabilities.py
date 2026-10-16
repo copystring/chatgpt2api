@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import Any
+from urllib.parse import urlsplit
 
 from fastapi import HTTPException
 
@@ -28,6 +29,41 @@ def _reject(capabilities: set[str]) -> None:
     )
 
 
+def _has_supported_image_source(value: dict[str, Any], part_type: str) -> bool:
+    if part_type == "image_url":
+        source = value.get("image_url") or value.get("url")
+        if isinstance(source, dict):
+            source = source.get("url") or source.get("image_url")
+        if not isinstance(source, str):
+            return False
+        candidate = source.strip()
+        if candidate.startswith("data:image/"):
+            return ";base64," in candidate
+        parsed = urlsplit(candidate)
+        return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
+
+    for key in ("image_url", "url"):
+        source = value.get(key)
+        if isinstance(source, dict):
+            source = source.get("url") or source.get("image_url")
+        if isinstance(source, str):
+            candidate = source.strip()
+            parsed = urlsplit(candidate)
+            if candidate.startswith("data:image/") and ";base64," in candidate:
+                return True
+            if parsed.scheme in {"http", "https"} and parsed.netloc:
+                return True
+    if any(isinstance(value.get(key), str) and value[key].strip() for key in ("base64", "b64_json")):
+        return True
+    source = value.get("source")
+    return (
+        isinstance(source, dict)
+        and str(source.get("type") or "") == "base64"
+        and isinstance(source.get("data"), str)
+        and bool(source["data"].strip())
+    )
+
+
 def _validate_content(value: object, capabilities: set[str], protocol: str, role: str = "user") -> None:
     if isinstance(value, dict):
         part_type = str(value.get("type") or "").strip()
@@ -35,13 +71,16 @@ def _validate_content(value: object, capabilities: set[str], protocol: str, role
             if part_type in _TEXT_PARTS:
                 return
             if part_type in _IMAGE_PARTS:
-                if role == "user":
+                if role == "user" and _has_supported_image_source(value, part_type):
                     return
-                capabilities.add(f"content:{part_type}_outside_user_message")
+                reason = f"content:{part_type}_unsupported_source" if role == "user" else f"content:{part_type}_outside_user_message"
+                capabilities.add(reason)
                 return
             if protocol == "anthropic" and part_type in _ANTHROPIC_TOOL_PARTS:
                 expected_role = "assistant" if part_type == "tool_use" else "user"
                 if role == expected_role:
+                    if part_type == "tool_result":
+                        _validate_content(value.get("content"), capabilities, protocol, "tool_result")
                     return
                 capabilities.add(f"content:{part_type}_outside_{expected_role}_message")
                 return
@@ -125,7 +164,7 @@ def validate_request_capabilities(body: dict[str, Any], protocol: str) -> None:
             for message in messages:
                 if not isinstance(message, dict):
                     continue
-                if message.get("role") == "tool" or message.get("tool_calls") or message.get("function_call"):
+                if message.get("role") in {"tool", "function"} or message.get("tool_calls") or message.get("function_call"):
                     capabilities.add("conversation:tool_call_history")
                 _validate_content(message.get("content"), capabilities, protocol, str(message.get("role") or "user").lower())
     elif protocol == "responses":
@@ -137,6 +176,10 @@ def validate_request_capabilities(body: dict[str, Any], protocol: str) -> None:
             if not isinstance(item, dict):
                 continue
             item_type = str(item.get("type") or "").strip()
+            if not item_type and "image_url" in item:
+                _validate_content({**item, "type": "image_url"}, capabilities, protocol, str(item.get("role") or "user").lower())
+            elif not item_type and any(key in item for key in ("file_id", "file_data", "filename")):
+                capabilities.add("response_item:file_reference_without_type")
             if item_type in {"function_call", "function_call_output", "computer_call", "computer_call_output"}:
                 capabilities.add(f"response_item:{item_type}")
             if item_type in _TEXT_PARTS | _IMAGE_PARTS:
